@@ -1,0 +1,69 @@
+//Step 8
+
+//Part A  ******************************************************************
+//Paste part A into index.php
+
+input = JSON.parse(body)
+#  Get the Senders Page Scoped ID
+sender = input['entry'][0]['messaging'][0]['sender']['id']
+#  Get the message text sent
+message = input['entry'][0]['messaging'][0]['message']['text']
+
+if !message.empty?
+	if message == 'image'
+		send_image_message(sender, 'http://thecatapi.com/api/images/get?format=src&type=gif', PAGE_ACCESS_TOKEN)
+	else
+		send_text_message(sender, "Thanks for you message", PAGE_ACCESS_TOKEN)
+	end
+end
+
+
+
+// END OF PART A  *********************************************************
+
+
+//Part B  *****************************************************************
+//Paste part B into index.php
+
+
+def send_message(access_token, payload)
+  # Send/Recieve API
+  url = "https://graph.facebook.com/v2.6/me/messages?access_token=#{access_token}"
+
+  #  Initiate the curl
+  conn = Faraday.new(url)
+
+  # Send the request
+  conn.post do |req|
+    req.headers['Content-Type'] = 'application/json'
+    req.body = payload.to_json
+  end
+end
+
+def build_text_message_payload(sender, message)
+  # Build the json payload data
+  {
+    recipient: { id: sender },
+    message: { text: message }
+  }
+end
+
+def send_text_message(sender, message, access_token)
+	jsonData = build_text_message_payload(sender, message)
+	send_message(access_token, jsonData)
+end
+
+
+// TODO: Step 9 - Complete this function
+// https://developers.facebook.com/docs/messenger-platform/send-api-reference/image-attachment
+def build_image_message_payload(sender, image_url)
+	// Build the json payload data
+	return ''
+end
+
+def send_image_message(sender, image_url, access_token)
+	jsonData = build_image_message_payload(sender, image_url)
+	send_message(access_token, jsonData)
+end
+
+// END OF PART B  *******************************************************
